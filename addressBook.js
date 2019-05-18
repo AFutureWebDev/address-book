@@ -1,3 +1,8 @@
+// Fetch multiple users on window load.
+window.onload = function() {
+    allUsers();
+  };
+
 const newArray = [];
 function get(){
     // Fetch a new user multiple times and store them in an array.
@@ -23,15 +28,42 @@ function get(){
         });
 }
 
-let multipleArray = [];
+// Figure out how to fetch multiple users in one fetch requests
 function allUsers() {
-    fetch('https://randomuser.me/api/?results=5000')
+    let multipleArray = null;
+    fetch('https://randomuser.me/api/?results=10')
     .then (response => response.json())
-        console.log()
+    .then (data => {
+        multipleArray = data.results
+        multipleArray.map(person => {
+        console.log(person);
+        let createAllLi = document.createElement("li");
+        let allContactsList = document.getElementById("allContacts");
+        let allImage = document.createElement("img");
+        // Add a button to each user that when clicked displays the rest of their information like DOB, address and so forth.
+        let button = document.createElement('button');
+        button.addEventListener("click",(e) => {
+            let textBox = document.createElement('p');
+            let pText = document.createTextNode("Cell: " + person.cell + " " + "Age: " + person.dob.age);
+            textBox.appendChild(pText);
+            createAllLi.appendChild(textBox);
+        })
+        allImage.src = person.picture.thumbnail;
+        createAllLi.appendChild(allImage);
+        createAllLi.appendChild(document.createTextNode(person.name.first + " " + person.name.last));
+        createAllLi.appendChild(button);
+        // puts text into each button
+        let buttonText = document.createTextNode("More Info");
+        // appends the text to each button
+        button.appendChild(buttonText);
+        allContactsList.append(createAllLi);
+    })
+      console.log(multipleArray);
+    })
+
+    document.getElementById("allContacts").innerHTML = " ";
 }
 
 
 
-// Figure out how to fetch multiple users in one fetch requests
-// Fetch multiple users on window load.
-// Add a button to each user that when clicked displays the rest of their information like DOB, address and so forth.
+
